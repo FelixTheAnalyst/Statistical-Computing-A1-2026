@@ -1,0 +1,14 @@
+---
+title: "STA Honours 2026 – Statistical Computing"
+---
+
+## Assignment 1
+
+This website contains my submission for **Statistical Computing – Assignment 1**.
+
+### Included practicals
+- Prac 1
+- Day 3 (Questions 4 and 5)
+- Prac 4
+
+All work is rendered using **Quarto** and the source code is available on GitHub.

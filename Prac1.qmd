@@ -1,0 +1,84 @@
+---
+title: "Practical 1"
+subtitle: STA Honours - Statistical Computing
+institute: "Department of Statistical Sciences, University of Cape Town"
+date: last-modified
+format: 
+  html:
+    toc: true
+date-format: MMMM YYYY
+execute: 
+  eval: true
+number-sections: true
+embed-resources: true
+---
+\hrulefill
+
+# Questions
+
+1. Find all rows in `airquality` that have missing values. Note that the `airquality` dataset in R is always available (just type `airquality` in the console to see it).
+
+```{r missing-values}
+data("airquality") # extract data
+
+head(airquality) # present first few rows
+
+paste0(" Header Names: ", names(airquality))
+
+paste0("Number of rows:", nrow(airquality), sep = " ")
+
+paste0("Total number of missing values (with missing values):", sum(is.na(airquality)), sep = " ")
+
+# remove missing values
+airquality_omit <- na.omit(airquality)
+
+# check missing values removed
+paste0("Number of rows (removing missing values): ", nrow(airquality_omit), sep = " ")
+```
+
+2. Find mean, sd, min, max for each of temperature and ozone level.
+
+```{r 5-number-summary}
+paste0("Temperature")
+paste0(" ")
+paste0("sd: ", sd(airquality_omit$Temp))
+paste0("mean: ", mean(airquality_omit$Temp))
+paste0("min: ", min(airquality_omit$Temp))
+paste0("max: ", max(airquality_omit$Temp))
+
+paste0("Ozone level")
+paste0(" ")
+paste0("sd: ", sd(airquality_omit$Ozone))
+paste0("mean: ", mean(airquality_omit$Ozone))
+paste0("min: ", min(airquality_omit$Ozone))
+paste0("max: ", max(airquality_omit$Ozone))
+
+```
+
+3. For linear regression, parameter estimates can be found as follows. $$\hat\beta = (X^TX)^{-1}X^TY$$
+Here, Y is the response variable, and X is the design matrix. The cars data (an R data set, also always available in `R`) contains two variables: speed and distance to stop. Fit a simple linear regression model to these data, i.e. find the estimates, using the equation above, and matrix calcuations in R. 
+
+```{r lm-fit-from-scratch}
+data(cars) # extract dataset
+
+head(cars) # display first few rows
+
+# find Beta estimates
+
+Y <- cars$dist
+X <- cbind(1, cars$speed)
+
+Beta_hat <- solve(t(X)%*%X)%*%t(X)%*%Y
+
+paste0("Beta_hat: ", Beta_hat)
+```
+
+
+4. Check that you get the same $\beta$ estimates as when fitting the linear regression model using lm() in R.
+
+```{r}
+cars_lm <- lm(Y ~ X) # fit lm model 
+
+cars_lm$coefficients
+```
+

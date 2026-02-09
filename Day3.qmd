@@ -1,0 +1,119 @@
+---
+title: "Day 3 Practical Question 4 & 5"
+subtitle: STA Honours - Statistical Computing
+institute: "Department of Statistical Sciences, University of Cape Town"
+date: last-modified
+format: 
+  html:
+    toc: true
+date-format: MMMM YYYY
+execute: 
+  eval: true
+number-sections: true
+embed-resources: true
+---
+
+\hrulefill
+
+## Plot curve / function
+
+
+Plot the function $f(x) = \sin(x)$ for $x \in [-2, 2]$.
+
+```{r}
+# define the function
+f <- function(x) {
+  sin(x)
+}
+
+# create a grid of x values
+x <- seq(-2, 2, length.out = 400)
+
+
+# evaluate the function on the grid
+y <- f(x)
+
+# plot the curve
+plot(x, y,
+     type = "l",        # line plot
+     lwd  = 2,
+     col  = "blue",
+     xlab = "x",
+     ylab = "f(x) = sin(x)",
+     main = "Plot of f(x) = sin(x) on [-2, 2]")
+
+# add reference line at y = 0
+abline(h = 0, lty = 2, col = "gray")
+```
+
+
+
+
+## QQ-plot
+
+Generate 1000 values from a $t$-distribution with 1 degree of freedom.
+
+Construct a QQ-plot with 95% probability bands (envelopes) to check whether the above values come from a standard normal distribution. You can only use use `rnorm()`, but not `qnorm`, `dnorm`, `pnorm`, or R's qqplot functions. 
+
+Check with:
+
+```{r}
+library(car)
+qqPlot(x, envelope = 0.95, ylim = c(-5, 5))
+```
+
+
+```{r}
+# generate data from t-distribution with 1 df 
+set.seed(123)
+n <- 1000
+
+x <- rt(n, df = 1)
+
+# sort observed data
+x_sorted <- sort(x)
+
+# construct theoretical normal quantiles
+# using simulation (order statistics)
+
+# Simulate a large normal sample
+z <- rnorm(n)
+
+# Sort simulated normal values
+z_sorted <- sort(z)
+
+# These serve as empirical normal quantiles
+theoretical_quantiles <- z_sorted
+
+# construct 95% envelopes via Monte Carlo simulation
+B <- 1000   # number of simulations
+Z_sim <- matrix(NA, nrow = n, ncol = B)
+
+for (b in 1:B) {
+  Z_sim[, b] <- sort(rnorm(n))
+}
+
+# Pointwise 95% envelopes
+lower_envelope <- apply(Z_sim, 1, quantile, probs = 0.025)
+upper_envelope <- apply(Z_sim, 1, quantile, probs = 0.975)
+
+# QQ-plot setup
+
+plot(theoretical_quantiles, x_sorted,
+     pch = 20,
+     cex = 0.6,
+     xlab = "Theoretical Quantiles (Normal)",
+     ylab = "Sample Quantiles",
+     main = "QQ-Plot vs Normal with 95% Envelopes",
+     ylim = c(-5, 5))
+
+# 45-degree reference line
+abline(0, 1, col = "blue", lwd = 2)
+
+# Envelopes
+lines(theoretical_quantiles, lower_envelope,
+      col = "red", lwd = 2, lty = 2)
+
+lines(theoretical_quantiles, upper_envelope,
+      col = "red", lwd = 2, lty = 2)
+```
